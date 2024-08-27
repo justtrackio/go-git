@@ -158,7 +158,8 @@ type PullOptions struct {
 	// CABundle specify additional ca bundle with system cert pool
 	CABundle []byte
 	// ProxyOptions provides info required for connecting to a proxy.
-	ProxyOptions transport.ProxyOptions
+	ProxyOptions          transport.ProxyOptions
+	ExcludeIgnoredChanges bool
 }
 
 // Validate validates the fields and sets the default values.
@@ -418,7 +419,8 @@ type ResetOptions struct {
 	Mode ResetMode
 	// Files, if not empty will constrain the reseting the index to only files
 	// specified in this list.
-	Files []string
+	Files                 []string
+	ExcludeIgnoredChanges bool
 }
 
 // Validate validates the fields and sets the default values.
