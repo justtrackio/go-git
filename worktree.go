@@ -133,8 +133,9 @@ func (w *Worktree) PullContext(ctx context.Context, o *PullOptions) error {
 	}
 
 	if err := w.Reset(&ResetOptions{
-		Mode:   MergeReset,
-		Commit: ref.Hash(),
+		Mode:                  MergeReset,
+		Commit:                ref.Hash(),
+		ExcludeIgnoredChanges: o.ExcludeIgnoredChanges,
 	}); err != nil {
 		return err
 	}
@@ -314,7 +315,7 @@ func (w *Worktree) ResetSparsely(opts *ResetOptions, dirs []string) error {
 	}
 
 	if opts.Mode == MergeReset || opts.Mode == HardReset {
-		if err := w.resetWorktree(t, opts.Files); err != nil {
+		if err := w.resetWorktree(t, opts.Files, opts.ExcludeIgnoredChanges); err != nil {
 			return err
 		}
 	}
@@ -432,8 +433,8 @@ func inFiles(files []string, v string) bool {
 	return false
 }
 
-func (w *Worktree) resetWorktree(t *object.Tree, files []string) error {
-	changes, err := w.diffStagingWithWorktree(true, false)
+func (w *Worktree) resetWorktree(t *object.Tree, files []string, excludeIgnoredChanges bool) error {
+	changes, err := w.diffStagingWithWorktree(true, excludeIgnoredChanges)
 	if err != nil {
 		return err
 	}
